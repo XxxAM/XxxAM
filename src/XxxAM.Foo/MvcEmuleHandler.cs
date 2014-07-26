@@ -9,17 +9,15 @@
 
 namespace XxxAM.Foo {
   using System;
+  using System.Reflection;
   using System.Web;
 
   /// <summary>The mvc emule handler.</summary>
   public class MvcEmuleHandler : IHttpHandler {
 
     /// <summary>
-    /// Ruft einen Wert ab, der angibt, ob eine weitere Anforderung die <see cref="T:System.Web.IHttpHandler"/>-Instanz verwenden kann.
+    /// Gets a value indicating whether is reusable.
     /// </summary>
-    /// <returns>
-    /// true, wenn die <see cref="T:System.Web.IHttpHandler"/>-Instanz wiederverwendet werden kann, andernfalls false.
-    /// </returns>
     public bool IsReusable {
       get { return true; }
     }
@@ -36,11 +34,30 @@ namespace XxxAM.Foo {
       var param1 = segments[3].TrimEnd('/');
 
       // Complete controller class name with suffic and (default) namespace
-      var fullName = String.Format("{0}.{1}Controller", 
+      var fullName = string.Format(
+          "{0}.{1}Controller", 
           this.GetType().Namespace, 
           controller);
       var controllerType = Type.GetType(fullName, true, true);
 
+      // Get an instance of the controller
+      var instance = Activator.CreateInstance(controllerType);
+
+      // Invoke the action method on the controller instance
+      const BindingFlags Flags = BindingFlags.Instance | 
+          BindingFlags.IgnoreCase | BindingFlags.Public;
+      var methodInfo = controllerType.GetMethod(action, Flags);
+      string result;
+      if (methodInfo.GetParameters().Length == 0) {
+        result = (string)methodInfo.Invoke(instance, null);
+      } else {
+        result = (string)methodInfo.Invoke(
+            instance, 
+            new object[] { param1 });
+      }
+
+      // Write out result.
+      context.Response.Write(result);
     }
   }
 }
