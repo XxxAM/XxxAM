@@ -1,5 +1,13 @@
-﻿using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿// --------------------------------------------------------------------------
+// <copyright file="AssemblyInfo.cs" company="XxxAM.Foo">
+//   Copyright (c) XxxAM.Foo. All rights reserved.
+// </copyright>
+// <summary>
+//   AssemblyInfo.cs
+// </summary>
+// --------------------------------------------------------------------------
+
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 // Allgemeine Informationen über eine Assembly werden über die folgenden 
